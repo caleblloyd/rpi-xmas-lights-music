@@ -1,0 +1,7 @@
+{
+  "num_relays": 4,
+  "gpio_init": [0,0,0,0],
+  "on_keys": ["y","u","i","o"],
+  "toggle_keys": ["h","j","k","l"],
+  "off_keys": ["n","m",",","."]
+}

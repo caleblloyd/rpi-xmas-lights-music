@@ -3,9 +3,6 @@ import getopt
 import os
 import controller
 
-def is_rpi():
-    return os.uname()[4][:3] == 'arm'
-
 class Usage(Exception):
     def __init__(self, msg):
         self.msg = msg
@@ -22,12 +19,14 @@ def main(argv=None):
 
         """
         @todo
-        1. Take a command line argument for a folder with an MP3 file in it
+        1. Take a command line argument for a MP3 file
         2. Pass it to the controller
         """
 
-        controller.start()
+        if len(args) < 1:
+            raise Usage("Takes a command line argument for a MP3 file")
 
+        controller.start(args[0])
 
 
     except Usage, err:
