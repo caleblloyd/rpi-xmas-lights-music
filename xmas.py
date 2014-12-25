@@ -12,7 +12,7 @@ def main(argv=None):
         argv = sys.argv
     try:
         try:
-            opts, args = getopt.getopt(argv[1:], "h", ["help"])
+            opts, args = getopt.getopt(argv[1:], "hlh", ["help", "local", "hdmi"])
         except getopt.error, msg:
              raise Usage(msg)
 
@@ -23,10 +23,10 @@ def main(argv=None):
         2. Pass it to the controller
         """
 
-        if len(args) < 1:
-            raise Usage("Takes a command line argument for a MP3 file")
+        if len(args) < 2:
+            raise Usage("xmas.py [-o local|hdmi] record|playback|detect mp3_file")
 
-        controller.start(args[0])
+        controller.start(args[0], args[1], opts)
 
 
     except Usage, err:

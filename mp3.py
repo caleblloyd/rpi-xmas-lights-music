@@ -1,15 +1,26 @@
 from config import is_rpi
+import subprocess
 import time
 
-def player(mp3_file, gpio_queues, keystroke_thread_stop):
+def player(mp3_file, interface, gpio_queues, stop_events):
+
+    process = ["omxplayer"]
+    if interface:
+        process.append("-o")
+        process.append("local")
+    process.append(mp3_file)
+
     if is_rpi:
-        #play the mp3
-        pass
+        p = subprocess.Popen(process)
+        p.wait()
     else:
-        print "playing",mp3_file
+        print process
         time.sleep(10)
 
-    keystroke_thread_stop.set()
-    print "song over, press any key to exit"
+    for stop_event in stop_events:
+        stop_event.set()
+    if stop_events:
+        print "song over, press any key to exit"
+
     for gpio_queue in gpio_queues:
         gpio_queue.put(-1)
