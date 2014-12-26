@@ -48,3 +48,9 @@ Requires that you have a relay board.  Solid state relays are recommended.  Conf
   - on_keys: keys that turn relays on in record mode
   - toggle_keys: keys that toggle relays in record mode
   - off_keys: keys that turn relays off in record mode
+
+
+Special Thanks
+===
+
+The code for the FFT detection was adapted from a forum post by "SpaceGerbil" at http://www.raspberrypi.org/forums/viewtopic.php?p=314087
