@@ -19,9 +19,8 @@ def player(mp3_file, interface, mp3_ready_event, sigint_event, gpio_queues, stop
     mp3_ready_event.set()
     while p.isalive():
         if sigint_event.is_set():
-            p.terminate()
-        else:
-            time.sleep(1)
+            p.sendintr()
+        time.sleep(0.5)
 
     for stop_event in stop_events:
         stop_event.set()
