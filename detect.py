@@ -68,8 +68,9 @@ def detector(mp3_ready_event, wav_fp, chunk_size, sample_rate, gpio_queues):
 
     chunk_time = 1. / sample_rate * chunk_size
     chunk_no = 0
+    threshold_off_min = [2.5, 1.5, 1.5, 2.5]
     threshold_seed = [3, 2, 2, 3]
-    threshold_size = 40
+    threshold_size = 30
     threshold_deque = [collections.deque() for _ in xrange(0, config['num_relays'])]
     for i,d in enumerate(threshold_deque):
         for _ in xrange(threshold_size):
@@ -107,10 +108,10 @@ def detector(mp3_ready_event, wav_fp, chunk_size, sample_rate, gpio_queues):
                 if len(d) > threshold_size:
                     d.popleft()
 
-                if matrix[i] <= threshold:
-                    matrix[i] = 0
-                else:
+                if matrix[i] > max(threshold, threshold_off_min[i]):
                     matrix[i] = 1
+                else:
+                    matrix[i] = 0
             # print matrix
 
             for i,v in enumerate(matrix):
