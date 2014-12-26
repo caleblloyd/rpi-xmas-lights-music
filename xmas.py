@@ -3,9 +3,6 @@ import getopt
 import os
 import controller
 
-def is_rpi():
-    return os.uname()[4][:3] == 'arm'
-
 class Usage(Exception):
     def __init__(self, msg):
         self.msg = msg
@@ -15,19 +12,21 @@ def main(argv=None):
         argv = sys.argv
     try:
         try:
-            opts, args = getopt.getopt(argv[1:], "h", ["help"])
+            opts, args = getopt.getopt(argv[1:], "hlh", ["help", "local", "hdmi"])
         except getopt.error, msg:
              raise Usage(msg)
 
 
         """
         @todo
-        1. Take a command line argument for a folder with an MP3 file in it
+        1. Take a command line argument for a MP3 file
         2. Pass it to the controller
         """
 
-        controller.start()
+        if len(args) < 2:
+            raise Usage("xmas.py [-o local|hdmi] record|playback|detect mp3_file")
 
+        controller.start(args[0], args[1], opts)
 
 
     except Usage, err:
