@@ -4,7 +4,7 @@ from datetime import datetime
 import pickle
 import time
 
-def recorder(mp3_ready_event, gpio_queues, thread_stop, playback_file):
+def recorder(mp3_ready_event, sigint_event, gpio_queues, thread_stop, playback_file):
     record = []
 
     while not mp3_ready_event.is_set():
@@ -12,8 +12,11 @@ def recorder(mp3_ready_event, gpio_queues, thread_stop, playback_file):
 
     start = datetime.now()
 
-    while not thread_stop.is_set():
+    while not thread_stop.is_set() and not sigint_event.is_set():
         c = readchar.readchar()
+        if c == bytes('\x03'):
+            sigint_event.set()
+            exit()
         desired_state = -1
         index = 0
         if c in config['on_keys']:

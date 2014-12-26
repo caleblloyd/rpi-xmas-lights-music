@@ -62,9 +62,8 @@ def calculate_levels(data, chunk, sample_rate):
     return [0, 0, 0, 0]
 
 
-def detector(mp3_ready_event, wav_fp, chunk_size, sample_rate, gpio_queues):
-    print "Processing....."
-
+def detector(mp3_ready_event, sigint_event, wav_fp, chunk_size, sample_rate, gpio_queues):
+    print "Detecting..."
 
     chunk_time = 1. / sample_rate * chunk_size
     chunk_no = 0
@@ -84,7 +83,7 @@ def detector(mp3_ready_event, wav_fp, chunk_size, sample_rate, gpio_queues):
 
     start = datetime.now()
 
-    while data:
+    while data and not sigint_event.is_set():
         frame_time_secs = chunk_time * chunk_no
         frame_time_delta = timedelta(seconds=frame_time_secs)
         frame_time_plus_one_secs = frame_time_secs + chunk_time
