@@ -30,19 +30,20 @@ def start(mode, mp3_file, options):
     if is_rpi:
         GPIO.setmode(GPIO.BOARD)
 
+    mp3_ready_event = Event()
     gpio_queues = [Queue() for _ in xrange(0, config['num_relays'])]
     stop_events = []
 
     if mode == 'record':
         keystroke_thread_stop = Event()
         stop_events.append(keystroke_thread_stop)
-        Thread(target=record.recorder, args=(gpio_queues, keystroke_thread_stop, playback_file)).start()
+        Thread(target=record.recorder, args=(mp3_ready_event, gpio_queues, keystroke_thread_stop, playback_file)).start()
     elif mode == 'playback':
-        Thread(target=playback.player, args=(gpio_queues, playback_file)).start()
+        Thread(target=playback.player, args=(mp3_ready_event, gpio_queues, playback_file)).start()
     elif mode == 'detect':
-        Thread(target=detect.detector, args=(wav_fp, chunk_size, sample_rate, gpio_queues)).start()
+        Thread(target=detect.detector, args=(mp3_ready_event, wav_fp, chunk_size, sample_rate, gpio_queues)).start()
 
-    Thread(target=mp3.player, args=(mp3_file, "local", gpio_queues, stop_events)).start()
+    Thread(target=mp3.player, args=(mp3_file, "local", mp3_ready_event, gpio_queues, stop_events)).start()
 
     for i in xrange(0, config['num_relays']):
         Thread(target=gpio.listener, args=(i, config['gpio_pins'][i], config['gpio_init'][i], gpio_queues[i])).start()

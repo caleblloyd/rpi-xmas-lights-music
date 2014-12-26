@@ -62,14 +62,14 @@ def calculate_levels(data, chunk, sample_rate):
     return [0, 0, 0, 0]
 
 
-def detector(wav_fp, chunk_size, sample_rate, gpio_queues):
+def detector(mp3_ready_event, wav_fp, chunk_size, sample_rate, gpio_queues):
     print "Processing....."
 
-    start = datetime.now()
+
     chunk_time = 1. / sample_rate * chunk_size
     chunk_no = 0
     threshold_seed = [3, 2, 2, 3]
-    threshold_size = 10
+    threshold_size = 40
     threshold_deque = [collections.deque() for _ in xrange(0, config['num_relays'])]
     for i,d in enumerate(threshold_deque):
         for _ in xrange(threshold_size):
@@ -77,6 +77,12 @@ def detector(wav_fp, chunk_size, sample_rate, gpio_queues):
 
 
     data = wav_fp.readframes(chunk_size)
+
+    while not mp3_ready_event.is_set():
+        time.sleep(.001)
+
+    start = datetime.now()
+
     while data:
         frame_time_secs = chunk_time * chunk_no
         frame_time_delta = timedelta(seconds=frame_time_secs)

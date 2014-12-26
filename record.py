@@ -2,10 +2,15 @@ import readchar
 from config import config
 from datetime import datetime
 import pickle
+import time
 
-def recorder(gpio_queues, thread_stop, playback_file):
-    start = datetime.now()
+def recorder(mp3_ready_event, gpio_queues, thread_stop, playback_file):
     record = []
+
+    while not mp3_ready_event.is_set():
+        time.sleep(.001)
+
+    start = datetime.now()
 
     while not thread_stop.is_set():
         c = readchar.readchar()
