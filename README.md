@@ -9,11 +9,12 @@ Raspberry Pi sync christmas lights to music
         sudo easy_install pip
         sudo apt-get -y install ffmpeg
 
-2. Install python dependencies readchar, RPi.GPIO, and pydub:
+2. Install python dependencies readchar, RPi.GPIO, pydub, and pexpect:
 
-       sudo pip install readchar
-       sudo pip install RPi.GPIO
-       sudo pip install pydub
+        sudo pip install readchar
+        sudo pip install RPi.GPIO
+        sudo pip install pydub
+        sudo pip install pexpect
        
 3. Program runs in 3 modes:
 
