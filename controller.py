@@ -1,4 +1,5 @@
 from config import config, is_rpi
+import detect
 import gpio
 import mp3
 import os
@@ -23,6 +24,9 @@ def start(mode, mp3_file, options):
         if not os.path.exists(playback_file):
             raise Exception("File does not exist: " + playback_file)
 
+    if mode == 'detect':
+        wav_fp, chunk_size, sample_rate = detect.setup_detection(mp3_file)
+
     if is_rpi:
         GPIO.setmode(GPIO.BOARD)
 
@@ -35,7 +39,8 @@ def start(mode, mp3_file, options):
         Thread(target=record.recorder, args=(gpio_queues, keystroke_thread_stop, playback_file)).start()
     elif mode == 'playback':
         Thread(target=playback.player, args=(gpio_queues, playback_file)).start()
-        pass
+    elif mode == 'detect':
+        Thread(target=detect.detector, args=(wav_fp, chunk_size, sample_rate, gpio_queues)).start()
 
     Thread(target=mp3.player, args=(mp3_file, "local", gpio_queues, stop_events)).start()
 
